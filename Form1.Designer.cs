@@ -36,20 +36,25 @@
             this.txtToodeNimetus = new System.Windows.Forms.TextBox();
             this.txtKogus = new System.Windows.Forms.TextBox();
             this.txtHind = new System.Windows.Forms.TextBox();
-            this.txtKategooria = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.kustutaBtn = new System.Windows.Forms.Button();
             this.uuendaBtn = new System.Windows.Forms.Button();
             this.lisaBtn = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
+            this.addCategory = new System.Windows.Forms.Button();
+            this.delCategory = new System.Windows.Forms.Button();
             this.toodeDataSet = new Toode_app_2.toodeDataSet();
             this.toodedBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.toodeDataSet1 = new Toode_app_2.toodeDataSet();
             this.toodedTableAdapter = new Toode_app_2.toodeDataSetTableAdapters.toodedTableAdapter();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.iDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nimetusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.kogusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.hindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.piltDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.kategooriaidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toodedBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.lelleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,12 +71,6 @@
             this.sdfsdfToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.sdfsdfToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.iDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nimetusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.kogusDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.hindDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.piltDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.kategooriaidDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.toodeDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.toodedBindingSource)).BeginInit();
@@ -144,14 +143,6 @@
             this.txtHind.Size = new System.Drawing.Size(295, 20);
             this.txtHind.TabIndex = 7;
             // 
-            // txtKategooria
-            // 
-            this.txtKategooria.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.txtKategooria.Location = new System.Drawing.Point(318, 39);
-            this.txtKategooria.Name = "txtKategooria";
-            this.txtKategooria.Size = new System.Drawing.Size(295, 20);
-            this.txtKategooria.TabIndex = 8;
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(707, 39);
@@ -209,23 +200,25 @@
             this.button5.Text = "button5";
             this.button5.UseVisualStyleBackColor = true;
             // 
-            // button6
+            // addCategory
             // 
-            this.button6.Location = new System.Drawing.Point(38, 349);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(144, 78);
-            this.button6.TabIndex = 18;
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.addCategory.Location = new System.Drawing.Point(38, 349);
+            this.addCategory.Name = "addCategory";
+            this.addCategory.Size = new System.Drawing.Size(144, 78);
+            this.addCategory.TabIndex = 18;
+            this.addCategory.Text = "Lisa kategooria";
+            this.addCategory.UseVisualStyleBackColor = true;
+            this.addCategory.Click += new System.EventHandler(this.addCategoryBtn_Click);
             // 
-            // button7
+            // delCategory
             // 
-            this.button7.Location = new System.Drawing.Point(219, 349);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(144, 78);
-            this.button7.TabIndex = 17;
-            this.button7.Text = "button7";
-            this.button7.UseVisualStyleBackColor = true;
+            this.delCategory.Location = new System.Drawing.Point(219, 349);
+            this.delCategory.Name = "delCategory";
+            this.delCategory.Size = new System.Drawing.Size(144, 78);
+            this.delCategory.TabIndex = 17;
+            this.delCategory.Text = "Kustuta kategooria";
+            this.delCategory.UseVisualStyleBackColor = true;
+            this.delCategory.Click += new System.EventHandler(this.delCategoryBtn_Click);
             // 
             // toodeDataSet
             // 
@@ -264,6 +257,43 @@
             this.dataGridView1.TabIndex = 20;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // 
+            // iDDataGridViewTextBoxColumn
+            // 
+            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
+            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
+            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
+            this.iDDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // nimetusDataGridViewTextBoxColumn
+            // 
+            this.nimetusDataGridViewTextBoxColumn.DataPropertyName = "nimetus";
+            this.nimetusDataGridViewTextBoxColumn.HeaderText = "nimetus";
+            this.nimetusDataGridViewTextBoxColumn.Name = "nimetusDataGridViewTextBoxColumn";
+            // 
+            // kogusDataGridViewTextBoxColumn
+            // 
+            this.kogusDataGridViewTextBoxColumn.DataPropertyName = "kogus";
+            this.kogusDataGridViewTextBoxColumn.HeaderText = "kogus";
+            this.kogusDataGridViewTextBoxColumn.Name = "kogusDataGridViewTextBoxColumn";
+            // 
+            // hindDataGridViewTextBoxColumn
+            // 
+            this.hindDataGridViewTextBoxColumn.DataPropertyName = "hind";
+            this.hindDataGridViewTextBoxColumn.HeaderText = "hind";
+            this.hindDataGridViewTextBoxColumn.Name = "hindDataGridViewTextBoxColumn";
+            // 
+            // piltDataGridViewTextBoxColumn
+            // 
+            this.piltDataGridViewTextBoxColumn.DataPropertyName = "pilt";
+            this.piltDataGridViewTextBoxColumn.HeaderText = "pilt";
+            this.piltDataGridViewTextBoxColumn.Name = "piltDataGridViewTextBoxColumn";
+            // 
+            // kategooriaidDataGridViewTextBoxColumn
+            // 
+            this.kategooriaidDataGridViewTextBoxColumn.DataPropertyName = "kategooria_id";
+            this.kategooriaidDataGridViewTextBoxColumn.HeaderText = "kategooria_id";
+            this.kategooriaidDataGridViewTextBoxColumn.Name = "kategooriaidDataGridViewTextBoxColumn";
             // 
             // toodedBindingSource1
             // 
@@ -351,7 +381,7 @@
             this.sdfsdfToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sdfsdfToolStripMenuItem1});
             this.sdfsdfToolStripMenuItem.Name = "sdfsdfToolStripMenuItem";
-            this.sdfsdfToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sdfsdfToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.sdfsdfToolStripMenuItem.Text = "sdfsdf";
             // 
             // sdfsdfToolStripMenuItem1
@@ -359,13 +389,13 @@
             this.sdfsdfToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sdfsdfToolStripMenuItem2});
             this.sdfsdfToolStripMenuItem1.Name = "sdfsdfToolStripMenuItem1";
-            this.sdfsdfToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.sdfsdfToolStripMenuItem1.Size = new System.Drawing.Size(106, 22);
             this.sdfsdfToolStripMenuItem1.Text = "sdfsdf";
             // 
             // sdfsdfToolStripMenuItem2
             // 
             this.sdfsdfToolStripMenuItem2.Name = "sdfsdfToolStripMenuItem2";
-            this.sdfsdfToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.sdfsdfToolStripMenuItem2.Size = new System.Drawing.Size(106, 22);
             this.sdfsdfToolStripMenuItem2.Text = "sdfsdf";
             // 
             // comboBox1
@@ -376,43 +406,6 @@
             this.comboBox1.Size = new System.Drawing.Size(295, 21);
             this.comboBox1.TabIndex = 23;
             // 
-            // iDDataGridViewTextBoxColumn
-            // 
-            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
-            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
-            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
-            this.iDDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // nimetusDataGridViewTextBoxColumn
-            // 
-            this.nimetusDataGridViewTextBoxColumn.DataPropertyName = "nimetus";
-            this.nimetusDataGridViewTextBoxColumn.HeaderText = "nimetus";
-            this.nimetusDataGridViewTextBoxColumn.Name = "nimetusDataGridViewTextBoxColumn";
-            // 
-            // kogusDataGridViewTextBoxColumn
-            // 
-            this.kogusDataGridViewTextBoxColumn.DataPropertyName = "kogus";
-            this.kogusDataGridViewTextBoxColumn.HeaderText = "kogus";
-            this.kogusDataGridViewTextBoxColumn.Name = "kogusDataGridViewTextBoxColumn";
-            // 
-            // hindDataGridViewTextBoxColumn
-            // 
-            this.hindDataGridViewTextBoxColumn.DataPropertyName = "hind";
-            this.hindDataGridViewTextBoxColumn.HeaderText = "hind";
-            this.hindDataGridViewTextBoxColumn.Name = "hindDataGridViewTextBoxColumn";
-            // 
-            // piltDataGridViewTextBoxColumn
-            // 
-            this.piltDataGridViewTextBoxColumn.DataPropertyName = "pilt";
-            this.piltDataGridViewTextBoxColumn.HeaderText = "pilt";
-            this.piltDataGridViewTextBoxColumn.Name = "piltDataGridViewTextBoxColumn";
-            // 
-            // kategooriaidDataGridViewTextBoxColumn
-            // 
-            this.kategooriaidDataGridViewTextBoxColumn.DataPropertyName = "kategooria_id";
-            this.kategooriaidDataGridViewTextBoxColumn.HeaderText = "kategooria_id";
-            this.kategooriaidDataGridViewTextBoxColumn.Name = "kategooriaidDataGridViewTextBoxColumn";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -420,15 +413,14 @@
             this.ClientSize = new System.Drawing.Size(1129, 768);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button7);
+            this.Controls.Add(this.addCategory);
+            this.Controls.Add(this.delCategory);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.lisaBtn);
             this.Controls.Add(this.uuendaBtn);
             this.Controls.Add(this.kustutaBtn);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.txtKategooria);
             this.Controls.Add(this.txtHind);
             this.Controls.Add(this.txtKogus);
             this.Controls.Add(this.txtToodeNimetus);
@@ -462,15 +454,14 @@
         private System.Windows.Forms.TextBox txtToodeNimetus;
         private System.Windows.Forms.TextBox txtKogus;
         private System.Windows.Forms.TextBox txtHind;
-        private System.Windows.Forms.TextBox txtKategooria;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button kustutaBtn;
         private System.Windows.Forms.Button uuendaBtn;
         private System.Windows.Forms.Button lisaBtn;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button addCategory;
+        private System.Windows.Forms.Button delCategory;
         private toodeDataSet toodeDataSet;
         private System.Windows.Forms.BindingSource toodedBindingSource;
         private toodeDataSetTableAdapters.toodedTableAdapter toodedTableAdapter;

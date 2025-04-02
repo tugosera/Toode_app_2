@@ -52,6 +52,18 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAddCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAddCategory.Designer.cs">
+      <DependentUpon>FormAddCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormDeleteCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDeleteCategory.Designer.cs">
+      <DependentUpon>FormDeleteCategory.cs</DependentUpon>
+    </Compile>
     <Compile Include="InputIdForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +79,12 @@
     </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAddCategory.resx">
+      <DependentUpon>FormAddCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDeleteCategory.resx">
+      <DependentUpon>FormDeleteCategory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InputIdForm.resx">
       <DependentUpon>InputIdForm.cs</DependentUpon>
