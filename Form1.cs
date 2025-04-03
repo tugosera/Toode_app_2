@@ -202,7 +202,7 @@ namespace Toode_app_2
             FormDeleteCategory deleteCategoryForm = new FormDeleteCategory();
             if (deleteCategoryForm.ShowDialog() == DialogResult.OK)
             {
-                int categoryId = deleteCategoryForm.CategoryId;
+                string categoryId = deleteCategoryForm.CategoryId;
 
                 string connectionString = "Data Source=HOME\\SQLEXPRESS;Initial Catalog=toode;Integrated Security=True";
 
@@ -246,6 +246,19 @@ namespace Toode_app_2
                 string.IsNullOrWhiteSpace(comboBox1.Text))
             {
                 MessageBox.Show("Заполните все поля!");
+                return;
+            }
+
+            // Проверяем, что введенные значения не отрицательные
+            if (!int.TryParse(txtKogus.Text, out int kogus) || kogus < 0)
+            {
+                MessageBox.Show("Количество не может быть отрицательным!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!decimal.TryParse(txtHind.Text, out decimal hind) || hind < 0)
+            {
+                MessageBox.Show("Цена не может быть отрицательной!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -383,33 +396,40 @@ namespace Toode_app_2
 
         private void uuendaBtn_Click(object sender, EventArgs e)
         {
-
+            // Получаем новые данные из полей ввода
             string uusNimetus = txtToodeNimetus.Text;
             string uusKogus = txtKogus.Text;
             string uusHind = txtHind.Text;
             string uusKategooria = comboBox1.Text;
+
             // Создаем и отображаем форму для ввода ID
             InputIdForm inputForm = new InputIdForm();
             if (inputForm.ShowDialog() == DialogResult.OK)
             {
                 string inputId = inputForm.ProductId;
 
-                // Проверяем введенный ID
-                if (string.IsNullOrEmpty(inputId))
+                if (string.IsNullOrEmpty(inputId) || !int.TryParse(inputId, out int id))
                 {
-                    MessageBox.Show("Вы не ввели ID!");
+                    MessageBox.Show("Неверный формат ID!");
                     return;
                 }
 
-                int id;
-                if (!int.TryParse(inputId, out id))
+                if (!int.TryParse(uusKogus, out int kogus) || kogus < 0)
                 {
-                    MessageBox.Show("Неверный формат ID. Пожалуйста, введите целое число.");
+                    MessageBox.Show("Количество не может быть отрицательным!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(uusHind, out decimal hind) || hind < 0)
+                {
+                    MessageBox.Show("Цена не может быть отрицательной!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 string connectionString = "Data Source=HOME\\SQLEXPRESS;Initial Catalog=toode;Integrated Security=True";
                 string currentImageName = "";
+                int kategooriaId = -1;
+                string kategooriaNimi = "";
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -417,8 +437,8 @@ namespace Toode_app_2
                     {
                         connection.Open();
 
-                        // SQL запрос для получения текущих данных по ID
-                        string query = "SELECT * FROM tooded WHERE id = @id";
+                        // 1. Получаем данные товара по ID
+                        string query = "SELECT nimetus, kogus, hind, kategooria_id, pilt FROM tooded WHERE id = @id";
                         using (SqlCommand cmd = new SqlCommand(query, connection))
                         {
                             cmd.Parameters.AddWithValue("@id", id);
@@ -426,11 +446,10 @@ namespace Toode_app_2
                             {
                                 if (reader.Read())
                                 {
-                                    // Загружаем данные из базы в текстовые поля
                                     txtToodeNimetus.Text = reader["nimetus"].ToString();
                                     txtKogus.Text = reader["kogus"].ToString();
                                     txtHind.Text = reader["hind"].ToString();
-                                    comboBox1.Text = reader["kategooria_id"].ToString();
+                                    kategooriaId = Convert.ToInt32(reader["kategooria_id"]);
                                     currentImageName = reader["pilt"].ToString();
                                 }
                                 else
@@ -441,46 +460,61 @@ namespace Toode_app_2
                             }
                         }
 
-                        // Просим пользователя загрузить новое изображение
-                        OpenFileDialog openFileDialog = new OpenFileDialog();
-                        openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
-                        string newImageName = currentImageName; // По умолчанию оставляем старое изображение
-
-                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        // 2. Получаем название категории по `kategooria_id`
+                        string categoryQuery = "SELECT kategooria FROM kategooria WHERE kategooria_id = @kategooria_id";
+                        using (SqlCommand categoryCmd = new SqlCommand(categoryQuery, connection))
                         {
-                            string newImagePath = openFileDialog.FileName;
-                            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
-                            string imagesFolder = Path.Combine(projectDirectory, "images");
-
-                            if (!Directory.Exists(imagesFolder))
+                            categoryCmd.Parameters.AddWithValue("@kategooria_id", kategooriaId);
+                            var result = categoryCmd.ExecuteScalar();
+                            if (result != null)
                             {
-                                Directory.CreateDirectory(imagesFolder);
+                                kategooriaNimi = result.ToString();
+                                comboBox1.Text = kategooriaNimi; // Устанавливаем название категории в ComboBox
                             }
-
-                            // Генерируем новое имя файла и копируем изображение
-                            newImageName = Path.GetFileName(newImagePath);
-                            string newImageDestination = Path.Combine(imagesFolder, newImageName);
-
-                            File.Copy(newImagePath, newImageDestination, true);
+                            else
+                            {
+                                MessageBox.Show("Категория не найдена.");
+                                return;
+                            }
                         }
 
-                        // Теперь обновляем все данные в базе, независимо от загрузки изображения
+                        // 3. Запрос изображения (если нужно)
+                        string newImageName = currentImageName;
+                        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                        {
+                            openFileDialog.Filter = "Изображения|*.jpg;*.jpeg;*.png;*.bmp";
+                            if (openFileDialog.ShowDialog() == DialogResult.OK)
+                            {
+                                string newImagePath = openFileDialog.FileName;
+                                string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
+                                string imagesFolder = Path.Combine(projectDirectory, "images");
+
+                                if (!Directory.Exists(imagesFolder))
+                                {
+                                    Directory.CreateDirectory(imagesFolder);
+                                }
+
+                                newImageName = Path.GetFileName(newImagePath);
+                                string newImageDestination = Path.Combine(imagesFolder, newImageName);
+                                File.Copy(newImagePath, newImageDestination, true);
+                            }
+                        }
+
+                        // 4. Обновляем данные в базе
                         string updateQuery = "UPDATE tooded SET nimetus = @nimetus, kogus = @kogus, hind = @hind, kategooria_id = @kategooria_id, pilt = @pilt WHERE id = @id";
                         using (SqlCommand updateCmd = new SqlCommand(updateQuery, connection))
                         {
                             updateCmd.Parameters.AddWithValue("@nimetus", uusNimetus);
-                            updateCmd.Parameters.AddWithValue("@kogus", uusKogus);
-                            updateCmd.Parameters.AddWithValue("@hind", uusHind);
-                            updateCmd.Parameters.AddWithValue("@kategooria_id", uusKategooria);
-                            updateCmd.Parameters.AddWithValue("@pilt", newImageName); // Если новое изображение не выбрано, остается старое
+                            updateCmd.Parameters.AddWithValue("@kogus", int.TryParse(uusKogus, out int parsedKogus) ? parsedKogus : 0);
+                            updateCmd.Parameters.AddWithValue("@hind", decimal.TryParse(uusHind, out decimal parsedHind) ? parsedHind : 0);
+                            updateCmd.Parameters.AddWithValue("@kategooria_id", kategooriaId);
+                            updateCmd.Parameters.AddWithValue("@pilt", newImageName);
                             updateCmd.Parameters.AddWithValue("@id", id);
 
                             int rowsAffected = updateCmd.ExecuteNonQuery();
                             if (rowsAffected > 0)
                             {
-
                                 MessageBox.Show("Запись успешно обновлена.");
-                                // Обновляем данные на форме
                                 this.toodedTableAdapter.Fill(this.toodeDataSet1.tooded);
                             }
                             else

@@ -12,7 +12,7 @@ namespace Toode_app_2
 {
     public partial class FormDeleteCategory : Form
     {
-        public int CategoryId { get; private set; }
+        public string CategoryId { get; private set; }  // Теперь CategoryId - строка
 
         public FormDeleteCategory()
         {
@@ -21,15 +21,15 @@ namespace Toode_app_2
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (int.TryParse(txtCategoryId.Text, out int id) && id > 0)
+            if (!string.IsNullOrWhiteSpace(txtCategoryId.Text))
             {
-                CategoryId = id;
+                CategoryId = txtCategoryId.Text.Trim();  // Убираем лишние пробелы и сохраняем ввод
                 DialogResult = DialogResult.OK;
                 this.Close();
             }
             else
             {
-                MessageBox.Show("Некорректный ID. Пожалуйста, введите положительное целое число.");
+                MessageBox.Show("ID категории не может быть пустым.");
             }
         }
     }
